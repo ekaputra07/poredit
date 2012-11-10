@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}} | Transleet</title>
+    <!-- Bootstrap -->
+    <link href="/static/css/application.css" rel="stylesheet" media="screen">
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+
+    <div class="container-narrow">
+
+      <div class="masthead">
+        <ul class="nav nav-pills pull-right">
+          <li {% if page == 'home' %}class="active"{% endif %}><a href="/">Home</a></li>
+          <li {% if page == 'about' %}class="active"{% endif %}><a href="#">About</a></li>
+        </ul>
+        <h3 class="muted"><a href="{{ url_for('home') }}" title="Transleet">TRANSpot</a></h3>
+        <div class="clearfix"></div>
+      </div>
+
+      <hr>
+
+      {% block content %}
+      {% endblock %}
+
+      <hr>
+
+      <div class="footer">
+        <p>&copy; Egomedia Bali 2012</p>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/application.js"></script>
+  </body>
+</html>

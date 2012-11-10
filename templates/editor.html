@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+
+    <div class="po_action" style="width:800px;">
+    <div class="btn-group pull-left">
+      <a href="?" class="btn btn-warning {% if not filter or filter==None %}active{% endif %}">All</a>
+      <a href="?f=translated" class="btn btn-warning {% if filter=='translated' %}active{% endif %}">Translated</a>
+      <a href="?f=untranslated" class="btn btn-warning {% if filter=='untranslated' %}active{% endif %}">Un-translated</a>
+      <a href="?f=fuzzy" class="btn btn-warning {% if filter=='fuzzy' %}active{% endif %}">Fuzzy</a>
+    </div>
+    
+    <input type="text" placeholder="Search for words..." id="quick-search" style="margin-left:20px;"/>
+    <div class="btn-group pull-right">
+      <a href="save" class="btn btn-success"><i class="icon-hdd icon-white"></i> <strong>Save</strong></a>
+      <a href="save" class="btn btn-success"><i class="icon-download-alt icon-white"></i> <strong>Download</strong></a>
+    </div>
+    </div>
+    
+    <div class="well well-small muted">
+    <strong>Attention!</strong> please copy and save this link if you want to access it later
+    <input type="text" value="{{url_for('translate', _external=True, filename=filename)}}" class="input-block-level" readonly/>
+    </div>
+
+{% if entries %}
+    <form name="poform" action="" method="post">
+    <input type="hidden" name="count" value="{{count}}" />
+    <input type="hidden" name="filename" value="{{filename}}" />
+{% for entry in entries %}
+    <div class="well well-small">
+    <span class="label label-success pull-right">{{loop.index}}</span>
+    
+    {% if entry.msgid_plural %} 
+    
+    <div class="alert alert-success msgid">{{entry.msgid}}<span class="label label-warning pull-right">Singular</span></div>
+    <input type="hidden" name="msgid_{{loop.index}}" value="{{entry.msgid}}"/>
+    <textarea name="msgstr_{{loop.index}}" class="msgstr">{{entry.msgstr_plural['0']}}</textarea>
+    
+    <div class="alert alert-success msgid">{{entry.msgid_plural}}<span class="label label-warning pull-right">Plural</span></div>
+    <input type="hidden" name="msgid_plural_{{loop.index}}" value="{{entry.msgid_plural}}"/>
+    <textarea name="msgstr_plural_{{loop.index}}" class="msgstr">{{entry.msgstr_plural['1']}}</textarea>
+    
+    {% else %}
+    
+    <div class="alert alert-success msgid">{{entry.msgid}}</div>
+    <input type="hidden" name="msgid_{{loop.index}}" value="{{entry.msgid}}"/>
+    <textarea name="msgstr_{{loop.index}}" class="msgstr">{{entry.msgstr}}</textarea>
+    
+    {% endif %}
+    
+    </div>
+{% endfor %}
+    </form>
+
+{% else %}
+<p class="muted">No translation available</p>
+{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="jumbotron">
+    <h1>Online .PO file editor</h1>
+    <p class="lead muted">Upload your PO/POT file, edit translations, save or compile it to MO file online. It's just that simple.</p>
+
+    <div class="well">
+    
+    <!-- Our flash message -->
+    {% with messages = get_flashed_messages(category_filter=['error']) %}
+    {% if messages %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      {% for message in messages %}
+          {{message}}
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <!-- End flash message -->
+    
+    <form name="upload_form" method="post" action="" enctype="multipart/form-data">
+    <input type="file" name="pofile" id="pofile"/>&nbsp;&nbsp;
+    <button type="submit" class="btn btn-primary hide" id="btn_upload">Upload now!</button>
+    </form>
+    </div>
+</div>
+{% endblock %}
