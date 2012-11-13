@@ -1,6 +1,12 @@
 import os
 import random
 
+from flask import request, redirect, render_template
+from flask import url_for, flash
+from werkzeug import secure_filename
+import polib
+
+
 def get_file_ext(filename):
     """ Get extension of a file """
     return filename.rsplit('.', 1)[1]
@@ -19,3 +25,92 @@ def generate_random_numbers(length):
     
 def file_exists(filename):
     return os.path.exists(filename)
+    
+def open_editor_form(app, request, filename):
+    """ Display editor form """
+    
+    filter = request.args.get('f')
+
+    filename = secure_filename(filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+    if file_exists(file_path):
+    
+        try:
+            po = polib.pofile(file_path)
+        except:
+            flash('Failed opening translation file: %s' % filename, 'error')
+            return redirect(url_for('home'))
+        
+        if filter == 'translated':
+            po = po.translated_entries()
+        elif filter == 'untranslated':
+            po = po.untranslated_entries()
+        elif filter == 'fuzzy':
+            po = po.fuzzy_entries()
+            
+        valid_entries = [e for e in po if not e.obsolete]
+        
+        print valid_entries[0].occurrences
+        
+        context = {
+            'title': filename,
+            'count': len(valid_entries),
+            'entries': valid_entries,
+            'filename': filename,
+            'filter': filter
+        }
+        return render_template('editor.html', **context)
+    else:
+        flash('Ups!, you are looking for translation file that are not exists.', 'error')
+        return redirect(url_for('home'))
+
+
+def save_translation(app, request, filename):
+    """ Save the translations back to the file"""
+    
+    entries_count = request.form.get('count')
+    filename = request.form.get('filename')
+    
+    if not entries_count or not filename:
+        # If something wrong with the form
+        flash('Invalid request!.', 'error')
+        return redirect(url_for('home'))
+    else:
+        filename = secure_filename(filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        # Open the file
+        try:
+            po = polib.pofile(file_path)
+        except:
+            flash('Failed opening translation file: %s' % filename, 'error')
+            return redirect(url_for('home'))
+        
+        for e in range(1, int(entries_count)+1):
+        
+            msgid = request.form.get('msgid_%s' % e)
+            msgid_plural = request.form.get('msgid_plural_%s' % e)
+            
+            new_msgstr = request.form.get('msgstr_%s' % e)
+            new_msgstr_plural = request.form.get('msgstr_plural_%s' % e)
+            
+            entry = po.find(msgid)
+            # Set the new msgstr
+            if entry:
+                # In case there are Plural translation
+                if msgid_plural:
+                    msgstr_plural = {}
+                    msgstr_plural[0] = new_msgstr
+                    msgstr_plural[1] = new_msgstr_plural
+                    setattr(entry, 'msgstr_plural', msgstr_plural)
+                else:
+                    setattr(entry, 'msgstr', new_msgstr)
+                
+        # Save the file
+        po.save()
+            
+        flash('Translations saved.', 'success')
+        return redirect(url_for('translate', filename=filename))
+        
+        

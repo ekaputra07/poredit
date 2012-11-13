@@ -38,3 +38,10 @@ textarea.msgstr{
     padding:10px 0;
     border-bottom:1px solid #ddd;
 }
+.pop{
+    margin-right:10px;
+    margin-top:5px;
+}
+.popover{
+    width: 400px;
+}

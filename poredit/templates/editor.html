@@ -13,8 +13,8 @@
     
     <input type="text" placeholder="Search for words..." id="quick-search" style="margin-left:20px;"/>
     <div class="btn-group pull-right">
-      <a href="save" class="btn btn-success"><i class="icon-hdd icon-white"></i> <strong>Save</strong></a>
-      <a href="save" class="btn btn-success"><i class="icon-download-alt icon-white"></i> <strong>Download</strong></a>
+      <a href="#" class="btn btn-success save"><i class="icon-hdd icon-white"></i> <strong>Save</strong></a>
+      <a href="#" class="btn btn-success"><i class="icon-download-alt icon-white"></i> <strong>Download</strong></a>
     </div>
     </div>
     
@@ -23,24 +23,39 @@
     <input type="text" value="{{url_for('translate', _external=True, filename=filename)}}" class="input-block-level" readonly/>
     </div>
 
+    <!-- Our flash message -->
+    {% with messages = get_flashed_messages(category_filter=['success']) %}
+    {% if messages %}
+    <div class="alert alert-success">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      {% for message in messages %}
+          {{message}}
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+    <!-- End flash message -->
+    
 {% if entries %}
-    <form name="poform" action="" method="post">
+    <form name="poform" id="poform" action="" method="post">
     <input type="hidden" name="count" value="{{count}}" />
     <input type="hidden" name="filename" value="{{filename}}" />
 {% for entry in entries %}
     <div class="well well-small">
-    <span class="label label-success pull-right">{{loop.index}}</span>
-    
+    <!--<span class="label label-success pull-right">{{loop.index}}</span>-->
+    <a href="#" class="pop pull-right" rel="popover" data-content="
+    {% for occ in entry.occurrences %}
+        #{{occ[0]}} : {{occ[1]}}<br />
+    {% endfor %}
+    " data-original-title="Occurrences" ><i class="icon icon-eye-open"></i></a>
     {% if entry.msgid_plural %} 
-    
-    <div class="alert alert-success msgid">{{entry.msgid}}<span class="label label-warning pull-right">Singular</span></div>
+    <div class="alert alert-success msgid">{{entry.msgid}}<span class="label label-inverse pull-right">Singular</span></div>
     <input type="hidden" name="msgid_{{loop.index}}" value="{{entry.msgid}}"/>
     <textarea name="msgstr_{{loop.index}}" class="msgstr">{{entry.msgstr_plural['0']}}</textarea>
     
-    <div class="alert alert-success msgid">{{entry.msgid_plural}}<span class="label label-warning pull-right">Plural</span></div>
+    <div class="alert alert-success msgid">{{entry.msgid_plural}}<span class="label label-inverse pull-right">Plural</span></div>
     <input type="hidden" name="msgid_plural_{{loop.index}}" value="{{entry.msgid_plural}}"/>
     <textarea name="msgstr_plural_{{loop.index}}" class="msgstr">{{entry.msgstr_plural['1']}}</textarea>
-    
     {% else %}
     
     <div class="alert alert-success msgid">{{entry.msgid}}</div>

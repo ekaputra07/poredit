@@ -24,4 +24,11 @@ $(document).ready(function(){
         });
     });
     
+    $('.btn.save').click(function(e){
+        e.preventDefault();
+        $('#poform').submit();
+    });
+    
+    $('.pop').popover({placement: 'left', trigger: 'hover', html: true}); 
+    
 });

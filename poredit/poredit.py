@@ -41,37 +41,17 @@ def home():
             return redirect(url_for('home'))
             
 
-@app.route('/translate/<filename>', methods=['GET'])
+@app.route('/translate/<filename>', methods=['GET', 'POST'])
 def translate(filename):
+    """
+    File editing handler
+    """
     
-    filter = request.args.get('f')
-
-    filename = secure_filename(filename)
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    
-    if file_exists(file_path):
-    
-        po = polib.pofile(file_path)
-        if filter == 'translated':
-            po = po.translated_entries()
-        elif filter == 'untranslated':
-            po = po.untranslated_entries()
-        elif filter == 'fuzzy':
-            po = po.fuzzy_entries()
-            
-        valid_entries = [e for e in po if not e.obsolete]
-        
-        context = {
-            'title': filename,
-            'count': len(valid_entries),
-            'entries': valid_entries,
-            'filename': filename,
-            'filter': filter
-        }
-        return render_template('editor.html', **context)
+    if request.method == 'POST':
+        return save_translation(app, request, filename)
     else:
-        flash('Ups!, you are looking for translation file that are not exists.', 'error')
-        return redirect(url_for('home'))
+        return open_editor_form(app, request, filename)
+    
     
     
 if __name__ == '__main__':
