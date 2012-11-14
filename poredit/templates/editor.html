@@ -19,7 +19,7 @@
     </div>
     
     <div class="well well-small muted">
-    <strong>Attention!</strong> please copy and save this link if you want to access it later
+    <p class="text-error"><strong>Attention!</strong> please copy and save this link if you want to access it later</p>
     <input type="text" value="{{url_for('translate', _external=True, filename=filename)}}" class="input-block-level" readonly/>
     </div>
 
@@ -37,6 +37,13 @@
     <!-- End flash message -->
     
 {% if entries %}
+    
+    {% if percentage >= 5 %}
+    <div class="progress progress-success progress-striped">
+        <div class="bar" style="width: {{percentage}}%;">{{percentage}}% translated</div>
+    </div>
+    {% endif %}
+    
     <form name="poform" id="poform" action="" method="post">
     <input type="hidden" name="count" value="{{count}}" />
     <input type="hidden" name="filename" value="{{filename}}" />

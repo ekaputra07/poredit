@@ -41,6 +41,8 @@ def open_editor_form(app, request, filename):
         except:
             flash('Failed opening translation file: %s' % filename, 'error')
             return redirect(url_for('home'))
+            
+        percentage = po.percent_translated()
         
         if filter == 'translated':
             po = po.translated_entries()
@@ -51,14 +53,13 @@ def open_editor_form(app, request, filename):
             
         valid_entries = [e for e in po if not e.obsolete]
         
-        print valid_entries[0].occurrences
-        
         context = {
             'title': filename,
             'count': len(valid_entries),
             'entries': valid_entries,
             'filename': filename,
-            'filter': filter
+            'filter': filter,
+            'percentage': percentage
         }
         return render_template('editor.html', **context)
     else:
