@@ -41,7 +41,7 @@ def home():
             return redirect(url_for('home'))
             
 
-@app.route('/translate/<filename>', methods=['GET', 'POST'])
+@app.route('/translate/<filename>/', methods=['GET', 'POST'])
 def translate(filename):
     """
     File editing handler
@@ -51,6 +51,17 @@ def translate(filename):
         return save_translation(app, request, filename)
     else:
         return open_editor_form(app, request, filename)
+    
+
+@app.route('/download/<filename>/', methods=['GET'])
+def download(filename):
+    """ File download handler """
+    
+    ftype = request.args.get('type')
+    if ftype and ftype == 'mo':
+        return download_mo(app, request, filename)
+        
+    return download_po(app, request, filename)
     
     
     

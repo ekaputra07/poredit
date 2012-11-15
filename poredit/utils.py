@@ -2,7 +2,7 @@ import os
 import random
 
 from flask import request, redirect, render_template
-from flask import url_for, flash
+from flask import url_for, flash, send_from_directory
 from werkzeug import secure_filename
 import polib
 
@@ -39,7 +39,7 @@ def open_editor_form(app, request, filename):
         try:
             po = polib.pofile(file_path)
         except:
-            flash('Failed opening translation file: %s' % filename, 'error')
+            flash('Invalid translation file detected.', 'error')
             return redirect(url_for('home'))
             
         percentage = po.percent_translated()
@@ -85,7 +85,7 @@ def save_translation(app, request, filename):
         try:
             po = polib.pofile(file_path)
         except:
-            flash('Failed opening translation file: %s' % filename, 'error')
+            flash('Invalid translation file detected.', 'error')
             return redirect(url_for('home'))
         
         for e in range(1, int(entries_count)+1):
@@ -114,4 +114,45 @@ def save_translation(app, request, filename):
         flash('Translations saved.', 'success')
         return redirect(url_for('translate', filename=filename))
         
+
+def download_po(app, request, filename):
+    """ Download the po file """
+    
+    filename = secure_filename(filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    
+    if file_exists(file_path):
+        return send_from_directory(
+                            app.config['UPLOAD_FOLDER'],
+                            filename,
+                            as_attachment=True)
         
+    flash('You\'re trying to download file that are not exists.', 'error')
+    return redirect(url_for('home'))
+    
+
+def download_mo(app, request, filename):
+    """ Download the mo file"""
+    
+    filename = secure_filename(filename)
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    
+    if file_exists(file_path):
+        try:
+            po = polib.pofile(file_path)
+        except:
+            flash('Invalid translation file detected.', 'error')
+            return redirect(url_for('home'))   
+        
+        # Now build the mo file
+        mofilename = filename+'.mo'
+        mopath = os.path.join(app.config['MO_RESULT_PATH'], mofilename)
+        po.save_as_mofile(mopath)
+        
+        return send_from_directory(
+                            app.config['MO_RESULT_PATH'],
+                            mofilename,
+                            as_attachment=True)
+                            
+    flash('You\'re trying to download file that are not exists.', 'error')
+    return redirect(url_for('home'))

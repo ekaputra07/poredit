@@ -30,5 +30,6 @@ $(document).ready(function(){
     });
     
     $('.pop').popover({placement: 'left', trigger: 'hover', html: true}); 
+    $('.popclick').popover({placement: 'bottom', trigger: 'click', html: true}); 
     
 });

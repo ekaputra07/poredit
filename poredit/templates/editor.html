@@ -14,7 +14,10 @@
     <input type="text" placeholder="Search for words..." id="quick-search" style="margin-left:20px;"/>
     <div class="btn-group pull-right">
       <a href="#" class="btn btn-success save"><i class="icon-hdd icon-white"></i> <strong>Save</strong></a>
-      <a href="#" class="btn btn-success"><i class="icon-download-alt icon-white"></i> <strong>Download</strong></a>
+      <a href="#" class="btn btn-success popclick" rel="popover" data-content="
+      <a class='btn btn btn-block' href='{{ url_for('download', filename=filename) }}' target='_blank'>Original (.po/.pot) file</a>
+      <a class='btn btn-primary btn-block' href='{{ url_for('download', filename=filename) }}?type=mo' target='_blank'>Compiled (.mo) file</a>
+      " data-original-title="Download"><i class="icon-download-alt icon-white"></i> <strong>Download</strong></a>
     </div>
     </div>
     
@@ -48,7 +51,7 @@
     <input type="hidden" name="count" value="{{count}}" />
     <input type="hidden" name="filename" value="{{filename}}" />
 {% for entry in entries %}
-    <div class="well well-small">
+    <div class="well well-small msgitem">
     <!--<span class="label label-success pull-right">{{loop.index}}</span>-->
     <a href="#" class="pop pull-right" rel="popover" data-content="
     {% for occ in entry.occurrences %}

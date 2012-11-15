@@ -2,8 +2,6 @@
 
 Simple online PO/POT translation file editor. Built on Flask and Python PoLib.
 
-NOTE: This project is still under development, not ready for production yet since the main features are not yet finished. I put it here just for backup purpose in case my PC's were burn :).
-
 ####What it does?
 Just a simple thing, I could upload a .po or .pot file to this app, I got the edit link, and send the link to my partner that will do the translation.
 
