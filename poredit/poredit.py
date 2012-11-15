@@ -64,6 +64,14 @@ def download(filename):
     return download_po(app, request, filename)
     
     
+@app.route('/about/', methods=['GET'])
+def about():
+    context = {
+        'title': 'About',
+        'page': 'about'
+    }
+    return render_template('about.html', **context)
     
+
 if __name__ == '__main__':
     app.run()
