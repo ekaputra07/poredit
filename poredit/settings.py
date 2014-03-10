@@ -8,10 +8,10 @@ ALLOWED_EXTENSIONS = ['po', 'pot']
 
 # A directory where uploaded Po file will hosted (absolute path)
 # example: '/home/eka/poredit/files/po'
-UPLOAD_FOLDER = '/home/eka/labs/translate/files/po'
+UPLOAD_FOLDER = '../files/po'
 
 # A directory where resulting Mo file will hosted (absolute path)
 # example: '/home/eka/poredit/files/mo'
-MO_RESULT_PATH = '/home/eka/labs/translate/files/mo'
+MO_RESULT_PATH = '../files/mo'
 
-#SERVER_NAME = 'localhost:5000'
+#SERVER_NAME = 'localhost:8000'
